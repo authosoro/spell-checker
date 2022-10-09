@@ -4,7 +4,6 @@ import {
     getIgnoredWords, 
     getSuggestions, 
     saveSuggestions,
-    updateDictionary
 } from "./storage";
 
 const SPELLING_SERVICE_ENDPOINT = "http://35.197.120.214:5000/api/v1/spell";
@@ -25,19 +24,6 @@ export type FocusWord = {
 export type SpellingCheckResult = Omit<FocusWord, 'hasSuggestion' | 'startIndex' | 'endIndex'>;
 export type SuggestionCheckResult = Omit<FocusWord, | 'startIndex' | 'endIndex'>
 
-/* generates an array of words from a string*/
-export const parseWords = (text: string): Array<string> => {
-
-    const words: Array<string> = 
-                    text
-                    .replaceAll("\n", " ") //remove all line breaks
-                    .replaceAll(",", " ") //remove all commas
-                    .trim() //remove empty spaces, both before & after the texts
-                    .split(" ") //give us an array of the words we need
-                    .filter((w)=> w.length>0); //ensure we don't get empty words
-    return words;
-};
-
 /* gets spelling suggestions for words in text from the strategic agenda spelling api */
 export const checkSpelling = async (text: string, lang: SupportedLanguageKey): Promise<Array<SpellingCheckResult>> => {
     const filteredText = filterWords( filterWords(text, lang, "ignored"), lang, "dict" );
@@ -54,7 +40,6 @@ export const checkSpelling = async (text: string, lang: SupportedLanguageKey): P
         });
         if(req.status === 200){
             const spellingCheckResult = req.data as Array<SpellingCheckResult>;
-            updateDictionaryFromSpellingResult(filteredText, spellingCheckResult, lang);
             saveSuggestions(spellingCheckResult, lang);
             return spellingCheckResult;
         }
@@ -68,15 +53,6 @@ export const checkSpelling = async (text: string, lang: SupportedLanguageKey): P
     }  
 }
 
-/*find words sent to spelling API that were not returned in the result, ==> it is correct*/
-export const updateDictionaryFromSpellingResult = (text: string, spellingCheckResult: Array<SpellingCheckResult>, lang: SupportedLanguageKey) => {
-    const curdictionaryWords = getDictionaryWords(lang);
-    const textWords = parseWords(text);
-    const wordsWithSuggestion = spellingCheckResult.map((scr)=> scr.original);
-    const newDictionaryWords = textWords.filter((tw)=> !wordsWithSuggestion.includes(tw));
-    const updatedDictionaryWords = [...curdictionaryWords, ...newDictionaryWords];
-    updateDictionary(updatedDictionaryWords, lang);
-};
 
 export const findWordIndices = (word: string, text: string): Array<number> => {
     if (word.length === 0) { return []; }

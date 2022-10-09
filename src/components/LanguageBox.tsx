@@ -35,7 +35,6 @@ export const LanguageBox: React.FC<{lang: SupportedLanguageKey}> = ({lang}) => {
 
     const getText = useCallback((): string => {
         const editorContent: DeltaStatic | undefined = editorRef.current?.editor?.getContents();
-        console.log("Editor config: ", editorContent);
         //get the text input from the quill delta or default to empty string
         const text: string = (editorContent && editorContent.ops)? 
                                 editorContent.ops.reduce((p, c)=> p + c.insert, "")
@@ -46,9 +45,7 @@ export const LanguageBox: React.FC<{lang: SupportedLanguageKey}> = ({lang}) => {
 
     
     const onChangeSelection = useCallback((range: ReactQuill.Range) => {
-        console.log("onChangeSelection");
         const text = getText();
-        console.log("")
         if(range === null) return;
         const cursorPos = range.index;
         const wordInFocus = getFocusWord(cursorPos, text, lang);
@@ -67,7 +64,6 @@ export const LanguageBox: React.FC<{lang: SupportedLanguageKey}> = ({lang}) => {
 
     const checkSpellingSuggestions = useCallback(() => {
         const text = getText();
-        console.log("Text in checkSpelling: ", text);
         languageProcessor.checkSpelling(text, lang)
         .then((result)=> {
             result.forEach((scr)=> {
@@ -75,14 +71,11 @@ export const LanguageBox: React.FC<{lang: SupportedLanguageKey}> = ({lang}) => {
                 const wordIndices = languageProcessor.findWordIndices(scr.original, text);
                 //mark them red
                 wordIndices.forEach((wordIndex)=> {
-                    console.log("applying formatting: ", wordIndex);
                     editorRef.current?.editor?.formatText(wordIndex, scr.original.length, {color: 'red'});
-
-
                 })
             })
         })
-        .catch((e)=> console.log("Spell Check Error"));
+        .catch((e)=> alert("Sorry, we're having some trouble right now checking spellings for you. Please check your network or contact support if issue persists"));
        
     }, [editorRef, getText, lang]);
      
@@ -110,7 +103,6 @@ export const LanguageBox: React.FC<{lang: SupportedLanguageKey}> = ({lang}) => {
     }, [lang]);
 
     const onTextChange = useCallback(async (_: string, delta: DeltaStatic) => {
-        console.log("on ytext change");
         if(delta.ops && delta.ops[1] !== undefined){
             const newChar = delta?.ops[1].insert;
             //trigger spelling check only when comma or space indicates end of a word
