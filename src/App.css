@@ -1,0 +1,49 @@
+.app-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.header {
+  margin-bottom: 50px;
+  border-bottom: 1px dotted #444444;
+}
+.language-group {
+  width: 400px;
+}
+
+.popup-menu-content {
+  padding: 2px;
+}
+.popup-menu-content .menu-item {
+  padding: 6px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.popup-menu-content .action-item {
+  color: #444444;
+}
+.popup-menu-content .action-item:hover {
+  background-color: rgb(222, 227, 229);
+}
+.popup-menu-content .suggestion-item {
+  color: rgb(104, 163, 125);
+}
+.popup-menu-content .suggestion-item:hover {
+  color: #444444;
+  background-color: rgb(181, 194, 185);
+}
+.toolbar {
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  align-items: center;
+}
+.clear-btn {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: none;
+  font-size: 15px;
+  background-color: rgb(229, 79, 75);
+  color: #FFFFFF;
+}
