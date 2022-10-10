@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useMemo, useEffect} from 'react';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from "quill";
-import { editorConfig, languageProcessor} from 'utils';
+import { editorConfig, languageProcessor} from '@utils/index';
 import 'react-quill/dist/quill.snow.css';
 import 'reactjs-popup/dist/index.css';
 import { SuggestionPopUp } from '@components/SuggestionPopUp';
